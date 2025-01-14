@@ -29,8 +29,8 @@ public class CepController {
     @GetMapping("/{cep}")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "CEP encontrado."),
-            @ApiResponse(responseCode = "404", description = "CEP não encontrado."),
-            @ApiResponse(responseCode = "400", description = "Erro de validação.")
+            @ApiResponse(responseCode = "404", description = "CEP não encontrado.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Erro de validação.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     public CEP findByCep(@PathVariable @Cep String cep) {
         return cepService.findByCep(cep);
