@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -28,6 +29,7 @@ class CepControllerTests {
 
     @Autowired
     MockMvc mockMvc;
+
     @Autowired
     CepRepository cepRepository;
 
@@ -78,6 +80,68 @@ class CepControllerTests {
                 .andExpect(jsonPath("$.errorCode").value("validation_error"))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value("CEP Inválido"));
+    }
+
+    @Test
+    void shouldFilterCepsByCidadeAndLogradouro() throws Exception {
+        var cep1 = new CEP(null, "90160-092", "Avenida Ipiranga", "Porto Alegre", "RS");
+        var cep2 = new CEP(null, "91781-001", "Avenida Juca Batista", "Porto Alegre", "RS");
+        var cep3 = new CEP(null, "02233-000", "Rua Capitão Rubens", "São Paulo", "SP");
+        cepRepository.save(cep1);
+        cepRepository.save(cep2);
+        cepRepository.save(cep3);
+
+        // cidade
+        // lowercase
+        var resultActions = mockMvc.perform(get("/cep/filter")
+                        .queryParam("cidade", "porto alegre")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2));
+
+        assertPagedCep(resultActions, cep1, 0);
+        assertPagedCep(resultActions, cep2, 1);
+
+        // lowercase, uppercase and accentuation
+        resultActions = mockMvc.perform(get("/cep/filter")
+                        .queryParam("cidade", "PoRTó ÁLEGRÊ")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2));
+
+        assertPagedCep(resultActions, cep1, 0);
+        assertPagedCep(resultActions, cep2, 1);
+
+        // logradouro
+        // lowercase
+        resultActions = mockMvc.perform(get("/cep/filter")
+                        .queryParam("logradouro", "rua")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1));
+
+        assertPagedCep(resultActions, cep3, 0);
+
+        // lowercase, uppercase and accentuation
+        resultActions = mockMvc.perform(get("/cep/filter")
+                        .queryParam("logradouro", "RuÁ")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1));
+
+        assertPagedCep(resultActions, cep3, 0);
+
+        // without cidade and logradouro (should return all ceps)
+        resultActions = mockMvc.perform(get("/cep/filter"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(3));
+
+        assertPagedCep(resultActions, cep1, 0);
+        assertPagedCep(resultActions, cep2, 1);
+        assertPagedCep(resultActions, cep3, 2);
+    }
+
+    ResultActions assertPagedCep(ResultActions resultActions, CEP cep, int index) throws Exception {
+        return resultActions.andExpect(jsonPath("$.content[" + index + "].cep").value(cep.getCep()))
+                .andExpect(jsonPath("$.content[" + index + "].logradouro").value(cep.getLogradouro()))
+                .andExpect(jsonPath("$.content[" + index + "].cidade").value(cep.getCidade()))
+                .andExpect(jsonPath("$.content[" + index + "].estado").value(cep.getEstado()));
     }
 
 }
