@@ -14,7 +14,7 @@ public interface CepRepository extends JpaRepository<CEP, Long>, JpaSpecificatio
     Optional<CEP> findByCep(String cep);
 
     @Query(value = """
-            SELECT * FROM cep WHERE UNACCENT(LOWER(cidade)) LIKE UNACCENT(LOWER(CONCAT('%', COALESCE(:cidade, ''),'%'))) AND
-                        UNACCENT(LOWER(logradouro)) LIKE UNACCENT(LOWER(CONCAT('%', COALESCE(:logradouro, ''),'%')));""", nativeQuery = true)
+            SELECT * FROM cep WHERE UNACCENT(cidade) ILIKE UNACCENT(CONCAT('%', COALESCE(:cidade, ''),'%')) AND
+                        UNACCENT(logradouro) ILIKE UNACCENT(CONCAT('%', COALESCE(:logradouro, ''),'%'));""", nativeQuery = true)
     Page<CEP> filterMany(String cidade, String logradouro, Pageable pageable);
 }
