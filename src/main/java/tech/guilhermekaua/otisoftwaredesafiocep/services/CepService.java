@@ -24,7 +24,9 @@ public class CepService {
     }
 
     public CEP findByCep(@Cep String cep) {
-        return cepRepository.findByCep(cep).orElseThrow(() -> new ErrorCodeException(ErrorCode.CEP_NOT_FOUND));
+        final String unformattedCep = Utils.unformatCep(cep);
+
+        return cepRepository.findByCep(unformattedCep).orElseThrow(() -> new ErrorCodeException(ErrorCode.CEP_NOT_FOUND));
     }
 
     public Page<CEP> filterMany(CepFilterDTO filter, Pageable pageable) {
