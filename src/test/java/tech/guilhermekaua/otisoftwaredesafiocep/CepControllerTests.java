@@ -53,13 +53,14 @@ class CepControllerTests {
 
     @Test
     void shouldFindByCepByCep() throws Exception {
-        cepRepository.save(new CEP(null, "90160-092", "Avenida Ipiranga", "Porto Alegre", "RS"));
+        cepRepository.save(new CEP(null, "90160-092", "Avenida Ipiranga", "bairro1", "Porto Alegre", "RS"));
 
         mockMvc.perform(get("/cep/90160-092"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.cep").value("90160-092"))
                 .andExpect(jsonPath("$.logradouro").value("Avenida Ipiranga"))
+                .andExpect(jsonPath("$.bairro").value("bairro1"))
                 .andExpect(jsonPath("$.cidade").value("Porto Alegre"))
                 .andExpect(jsonPath("$.estado").value("RS"));
     }
@@ -84,9 +85,9 @@ class CepControllerTests {
 
     @Test
     void shouldFilterCepsByCidadeAndLogradouro() throws Exception {
-        var cep1 = new CEP(null, "90160-092", "Avenida Ipiranga", "Porto Alegre", "RS");
-        var cep2 = new CEP(null, "91781-001", "Avenida Juca Batista", "Porto Alegre", "RS");
-        var cep3 = new CEP(null, "02233-000", "Rua Capitão Rubens", "São Paulo", "SP");
+        var cep1 = new CEP(null, "90160-092", "Avenida Ipiranga", "bairro1", "Porto Alegre", "RS");
+        var cep2 = new CEP(null, "91781-001", "Avenida Juca Batista", "bairro2", "Porto Alegre", "RS");
+        var cep3 = new CEP(null, "02233-000", "Rua Capitão Rubens", "bairro3", "São Paulo", "SP");
         cepRepository.save(cep1);
         cepRepository.save(cep2);
         cepRepository.save(cep3);
@@ -140,6 +141,7 @@ class CepControllerTests {
     ResultActions assertPagedCep(ResultActions resultActions, CEP cep, int index) throws Exception {
         return resultActions.andExpect(jsonPath("$.content[" + index + "].cep").value(cep.getCep()))
                 .andExpect(jsonPath("$.content[" + index + "].logradouro").value(cep.getLogradouro()))
+                .andExpect(jsonPath("$.content[" + index + "].bairro").value(cep.getBairro()))
                 .andExpect(jsonPath("$.content[" + index + "].cidade").value(cep.getCidade()))
                 .andExpect(jsonPath("$.content[" + index + "].estado").value(cep.getEstado()));
     }
