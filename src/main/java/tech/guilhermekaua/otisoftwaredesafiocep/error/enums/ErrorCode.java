@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 public enum ErrorCode {
     CEP_NOT_FOUND("cep_not_found", HttpStatus.NOT_FOUND, "CEP não encontrado."),
+    CEP_ALREADY_EXISTS("cep_already_exists", HttpStatus.CONFLICT, "Já existe um CEP com este valor."),
     VALIDATION_ERROR("validation_error", HttpStatus.BAD_REQUEST, "%validation_message%");
 
     final String code;

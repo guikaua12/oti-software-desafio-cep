@@ -5,11 +5,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CepFilterDTO;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CreateCepDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.entities.CEP;
 import tech.guilhermekaua.otisoftwaredesafiocep.error.exceptions.handler.ApiErrorResponse;
 import tech.guilhermekaua.otisoftwaredesafiocep.services.CepService;
@@ -44,5 +47,17 @@ public class CepController {
     })
     public Page<CEP> filterMany(@ModelAttribute CepFilterDTO filterDTO, Pageable pageable) {
         return cepService.filterMany(filterDTO, pageable);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Cria um CEP")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Cep criado com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Erro de validação.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Já existe um CEP com esse valor.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+    })
+    public CEP create(@RequestBody @Valid CreateCepDTO dto) {
+        return cepService.create(dto);
     }
 }

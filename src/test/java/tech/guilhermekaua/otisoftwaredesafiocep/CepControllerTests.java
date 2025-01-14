@@ -1,9 +1,11 @@
 package tech.guilhermekaua.otisoftwaredesafiocep;
 
+import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,6 +18,7 @@ import tech.guilhermekaua.otisoftwaredesafiocep.dao.CepRepository;
 import tech.guilhermekaua.otisoftwaredesafiocep.entities.CEP;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -144,6 +147,79 @@ class CepControllerTests {
                 .andExpect(jsonPath("$.content[" + index + "].bairro").value(cep.getBairro()))
                 .andExpect(jsonPath("$.content[" + index + "].cidade").value(cep.getCidade()))
                 .andExpect(jsonPath("$.content[" + index + "].estado").value(cep.getEstado()));
+    }
+
+    @Test
+    void shouldCreateCep() throws Exception {
+        final JSONObject body = new JSONObject();
+        body.put("cep", "90160-092");
+        body.put("logradouro", "Avenida Ipiranga");
+        body.put("bairro", "bairro1");
+        body.put("cidade", "Porto Alegre");
+        body.put("estado", "RS");
+
+        mockMvc.perform(
+                        post("/cep")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body.toJSONString())
+                ).andExpect(status().isCreated())
+                .andExpect(jsonPath("$.cep").value("90160-092"))
+                .andExpect(jsonPath("$.logradouro").value("Avenida Ipiranga"))
+                .andExpect(jsonPath("$.bairro").value("bairro1"))
+                .andExpect(jsonPath("$.cidade").value("Porto Alegre"))
+                .andExpect(jsonPath("$.estado").value("RS"));
+
+        mockMvc.perform(get("/cep/90160-092"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cep").value("90160-092"))
+                .andExpect(jsonPath("$.logradouro").value("Avenida Ipiranga"))
+                .andExpect(jsonPath("$.bairro").value("bairro1"))
+                .andExpect(jsonPath("$.cidade").value("Porto Alegre"))
+                .andExpect(jsonPath("$.estado").value("RS"));
+    }
+
+    @Test
+    void shouldNotCreateCepIfAlreadyExists() throws Exception {
+        final JSONObject body = new JSONObject();
+        body.put("cep", "90160-092");
+        body.put("logradouro", "Avenida Ipiranga");
+        body.put("bairro", "bairro1");
+        body.put("cidade", "Porto Alegre");
+        body.put("estado", "RS");
+
+        mockMvc.perform(
+                post("/cep")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body.toJSONString())
+        ).andExpect(status().isCreated());
+
+        mockMvc.perform(
+                        post("/cep")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body.toJSONString())
+                ).andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("cep_already_exists"))
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.message").value("Já existe um CEP com este valor."));
+    }
+
+    @Test
+    void shouldNotCreateCepIfInvalidCep() throws Exception {
+        final JSONObject body = new JSONObject();
+        body.put("cep", "90160-09299999");
+        body.put("logradouro", "Avenida Ipiranga");
+        body.put("bairro", "bairro1");
+        body.put("cidade", "Porto Alegre");
+        body.put("estado", "RS");
+
+        mockMvc.perform(
+                        post("/cep")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body.toJSONString())
+                ).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("validation_error"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("CEP Inválido"));
     }
 
 }
