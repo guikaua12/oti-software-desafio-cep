@@ -50,7 +50,7 @@ class CepControllerTests {
     }
 
     @Test
-    void shouldGetCepByCep() throws Exception {
+    void shouldFindByCepByCep() throws Exception {
         cepRepository.save(new CEP(null, "90160-092", "Avenida Ipiranga", "Porto Alegre", "RS"));
 
         mockMvc.perform(get("/cep/90160-092"))
@@ -69,6 +69,15 @@ class CepControllerTests {
                 .andExpect(jsonPath("$.errorCode").value("cep_not_found"))
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value("CEP não encontrado."));
+    }
+
+    @Test
+    void shouldReturnErrorIfInvalidCepFormat() throws Exception {
+        mockMvc.perform(get("/cep/99999-9991"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("validation_error"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("CEP Inválido"));
     }
 
 }

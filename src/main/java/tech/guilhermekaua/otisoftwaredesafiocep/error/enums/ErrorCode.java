@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatusCode;
 
 @Getter
 public enum ErrorCode {
-    CEP_NOT_FOUND("cep_not_found", HttpStatus.NOT_FOUND, "CEP não encontrado.");
+    CEP_NOT_FOUND("cep_not_found", HttpStatus.NOT_FOUND, "CEP não encontrado."),
+    VALIDATION_ERROR("validation_error", HttpStatus.BAD_REQUEST, "%validation_message%");
 
     final String code;
     final HttpStatusCode statusCode;
