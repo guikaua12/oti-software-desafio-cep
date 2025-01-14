@@ -1,4 +1,7 @@
 package tech.guilhermekaua.otisoftwaredesafiocep.error.exceptions.handler;
 
-public record ApiErrorResponse(String errorCode, int status, String message) {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public record ApiErrorResponse(@Schema(allowableValues = {"cep_not_found", "validation_error"}) String errorCode,
+                               int status, String message) {
 }
