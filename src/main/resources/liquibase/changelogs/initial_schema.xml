@@ -5,6 +5,9 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="1" author="guilherme_kaua">
+        <sql dbms="postgresql">CREATE
+        EXTENSION IF NOT EXISTS unaccent;</sql>
+
         <createTable tableName="cep">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
