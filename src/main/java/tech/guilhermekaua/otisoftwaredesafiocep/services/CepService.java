@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import tech.guilhermekaua.otisoftwaredesafiocep.dao.CepRepository;
 import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CepFilterDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CreateCepDTO;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.UpdateCepDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.entities.CEP;
 import tech.guilhermekaua.otisoftwaredesafiocep.error.enums.ErrorCode;
 import tech.guilhermekaua.otisoftwaredesafiocep.error.exceptions.ErrorCodeException;
@@ -41,6 +42,26 @@ public class CepService {
         });
 
         final CEP cep = new CEP(null, unformattedCep, dto.logradouro(), dto.bairro(), dto.cidade(), dto.estado());
+        return cepRepository.save(cep);
+    }
+
+    public CEP update(@Valid UpdateCepDTO dto) {
+        final String unformattedCep = Utils.unformatCep(dto.cep());
+
+        final CEP cep = cepRepository.findByCep(unformattedCep).orElseThrow(() -> new ErrorCodeException(ErrorCode.CEP_NOT_FOUND));
+
+        if (dto.logradouro() != null && !dto.logradouro().isBlank())
+            cep.setLogradouro(dto.logradouro());
+
+        if (dto.bairro() != null && !dto.bairro().isBlank())
+            cep.setBairro(dto.bairro());
+
+        if (dto.cidade() != null && !dto.cidade().isBlank())
+            cep.setCidade(dto.cidade());
+
+        if (dto.estado() != null && !dto.estado().isBlank())
+            cep.setEstado(dto.estado());
+        
         return cepRepository.save(cep);
     }
 }

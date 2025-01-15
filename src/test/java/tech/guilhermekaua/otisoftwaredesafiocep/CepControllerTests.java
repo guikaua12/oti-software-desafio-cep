@@ -18,8 +18,7 @@ import tech.guilhermekaua.otisoftwaredesafiocep.dao.CepRepository;
 import tech.guilhermekaua.otisoftwaredesafiocep.entities.CEP;
 import tech.guilhermekaua.otisoftwaredesafiocep.utils.Utils;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -221,6 +220,61 @@ class CepControllerTests {
                 .andExpect(jsonPath("$.errorCode").value("validation_error"))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value("CEP Inválido"));
+    }
+
+    @Test
+    void shouldUpdateCep() throws Exception {
+        final JSONObject createCepBody = new JSONObject();
+        createCepBody.put("cep", "90160-092");
+        createCepBody.put("logradouro", "Avenida Ipiranga");
+        createCepBody.put("bairro", "bairro1");
+        createCepBody.put("cidade", "Porto Alegre");
+        createCepBody.put("estado", "RS");
+
+        mockMvc.perform(
+                post("/cep")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createCepBody.toJSONString())
+        ).andExpect(status().isCreated());
+
+        final JSONObject updateCepBody = new JSONObject();
+        updateCepBody.put("cep", "90160-092");
+        updateCepBody.put("logradouro", "Novo Logradouro");
+        updateCepBody.put("bairro", "Novo bairro");
+        updateCepBody.put("cidade", "Nova cidade");
+        updateCepBody.put("estado", "Novo estado");
+
+        mockMvc.perform(put("/cep")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateCepBody.toJSONString())
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.cep").value("90.160-092"));
+
+        mockMvc.perform(get("/cep/90160-092"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cep").value("90.160-092"))
+                .andExpect(jsonPath("$.logradouro").value("Novo Logradouro"))
+                .andExpect(jsonPath("$.bairro").value("Novo bairro"))
+                .andExpect(jsonPath("$.cidade").value("Nova cidade"))
+                .andExpect(jsonPath("$.estado").value("Novo estado"));
+    }
+
+    @Test
+    void shouldNotUpdateIfCepNotFound() throws Exception {
+        final JSONObject updateCepBody = new JSONObject();
+        updateCepBody.put("cep", "90160-092");
+        updateCepBody.put("logradouro", "Novo Logradouro");
+        updateCepBody.put("bairro", "Novo bairro");
+        updateCepBody.put("cidade", "Nova cidade");
+        updateCepBody.put("estado", "Novo estado");
+
+        mockMvc.perform(put("/cep")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateCepBody.toJSONString())
+                ).andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorCode").value("cep_not_found"))
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("CEP não encontrado."));
     }
 
 }

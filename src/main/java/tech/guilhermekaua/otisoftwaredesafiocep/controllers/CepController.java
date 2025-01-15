@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CepDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CepFilterDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CreateCepDTO;
-import tech.guilhermekaua.otisoftwaredesafiocep.entities.CEP;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.UpdateCepDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.error.exceptions.handler.ApiErrorResponse;
 import tech.guilhermekaua.otisoftwaredesafiocep.services.CepService;
 import tech.guilhermekaua.otisoftwaredesafiocep.validation.Cep;
@@ -58,8 +58,18 @@ public class CepController {
             @ApiResponse(responseCode = "400", description = "Erro de validação.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
             @ApiResponse(responseCode = "409", description = "Já existe um CEP com esse valor.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    public CEP create(@RequestBody @Valid CreateCepDTO dto) {
-        return cepService.create(dto);
     public CepDTO create(@RequestBody @Valid CreateCepDTO dto) {
+        return CepDTO.fromCEP(cepService.create(dto));
+    }
+
+    @PutMapping
+    @Operation(summary = "Atualiza os dados de um CEP")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cep atualizado com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Erro de validação.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "CEP não encontrado.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+    })
+    public CepDTO update(@RequestBody @Valid UpdateCepDTO dto) {
+        return CepDTO.fromCEP(cepService.update(dto));
     }
 }
