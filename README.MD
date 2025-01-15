@@ -9,7 +9,9 @@ o problema proposto.
 
 Sobre os endpoints de listar CEPs por logradouro e cidade, eu na verdade juntei em um só endpoint, onde é
 possivel mandar **2 query parameters** opcionais, com o valor que quer filtrar, por ex:
-`/cep/filter?logradouro=Avenida&cidade=Porto`
+`/cep/filter?logradouro=Avenida&cidade=Porto`.
+
+E agora sobre as nomenclaturas usadas, achei melhor usar quase tudo em inglês (comentários, nomes de classe, etc).
 
 ## Como rodar o projeto
 
