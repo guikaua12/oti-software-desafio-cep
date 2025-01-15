@@ -11,6 +11,24 @@ services:
       - db_data:/var/lib/postgresql/data
     networks:
       - default
+    healthcheck:
+      test: curl -f http://db:5432
+      interval: 1s
+      timeout: 5s
+      retries: 5
+  backend:
+    image: guikaua12/oti-software-desafio-cep:latest
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=jdbc:postgresql://db:5432/oti_cep_api
+      - DATABASE_USERNAME
+      - DATABASE_PASSWORD
+      - JWT_SECRET
+      - JWT_ISSUER
+      - JWT_EXPIRE_DURATION
 
 volumes:
   db_data:
