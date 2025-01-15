@@ -11,7 +11,7 @@ Sobre os endpoints de listar CEPs por logradouro e cidade, eu na verdade juntei 
 possivel mandar **2 query parameters** opcionais, com o valor que quer filtrar, por ex:
 `/cep/filter?logradouro=Avenida&cidade=Porto`.
 
-Sobre as nomenclaturas do projeto, decidi usar quase tudo em inglês (comentários, nomes de classe, etc) pois acredito que seja convenção entre os desenvolvedores.
+Sobre as nomenclaturas do projeto, decidi usar quase tudo em inglês (comentários, nomes de classe, mensagens de commit, etc) pois acredito que seja convenção entre os desenvolvedores.
 
 Para se autenticar nos endpoints, basta em enviar um header "Authorization" com o valor do token gerado ao se autenticar nas rotas de login/register, prefixado com "Bearer ", exemplo: `Bearer xxxxxxxxxxxxxxx`
 
