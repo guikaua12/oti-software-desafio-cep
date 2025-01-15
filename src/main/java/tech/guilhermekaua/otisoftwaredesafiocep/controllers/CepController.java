@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CepDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CepFilterDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CreateCepDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.entities.CEP;
@@ -35,8 +36,8 @@ public class CepController {
             @ApiResponse(responseCode = "404", description = "CEP não encontrado.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Erro de validação.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    public CEP findByCep(@PathVariable @Cep String cep) {
-        return cepService.findByCep(cep);
+    public CepDTO findByCep(@PathVariable @Cep String cep) {
+        return CepDTO.fromCEP(cepService.findByCep(cep));
     }
 
     @GetMapping("/filter")
@@ -45,8 +46,8 @@ public class CepController {
             @ApiResponse(responseCode = "200", description = "Lista com todos os CEPs encontrados."),
             @ApiResponse(responseCode = "400", description = "Erro de validação.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    public Page<CEP> filterMany(@ModelAttribute CepFilterDTO filterDTO, Pageable pageable) {
-        return cepService.filterMany(filterDTO, pageable);
+    public Page<CepDTO> filterMany(@ModelAttribute CepFilterDTO filterDTO, Pageable pageable) {
+        return CepDTO.fromCepPage(cepService.filterMany(filterDTO, pageable));
     }
 
     @PostMapping
@@ -59,5 +60,6 @@ public class CepController {
     })
     public CEP create(@RequestBody @Valid CreateCepDTO dto) {
         return cepService.create(dto);
+    public CepDTO create(@RequestBody @Valid CreateCepDTO dto) {
     }
 }

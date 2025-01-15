@@ -16,6 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import tech.guilhermekaua.otisoftwaredesafiocep.dao.CepRepository;
 import tech.guilhermekaua.otisoftwaredesafiocep.entities.CEP;
+import tech.guilhermekaua.otisoftwaredesafiocep.utils.Utils;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -56,12 +57,12 @@ class CepControllerTests {
 
     @Test
     void shouldFindByCepByCep() throws Exception {
-        cepRepository.save(new CEP(null, "90160-092", "Avenida Ipiranga", "bairro1", "Porto Alegre", "RS"));
+        cepRepository.save(new CEP(null, "90160092", "Avenida Ipiranga", "bairro1", "Porto Alegre", "RS"));
 
         mockMvc.perform(get("/cep/90160-092"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.cep").value("90160-092"))
+                .andExpect(jsonPath("$.cep").value("90.160-092"))
                 .andExpect(jsonPath("$.logradouro").value("Avenida Ipiranga"))
                 .andExpect(jsonPath("$.bairro").value("bairro1"))
                 .andExpect(jsonPath("$.cidade").value("Porto Alegre"))
@@ -88,9 +89,9 @@ class CepControllerTests {
 
     @Test
     void shouldFilterCepsByCidadeAndLogradouro() throws Exception {
-        var cep1 = new CEP(null, "90160-092", "Avenida Ipiranga", "bairro1", "Porto Alegre", "RS");
-        var cep2 = new CEP(null, "91781-001", "Avenida Juca Batista", "bairro2", "Porto Alegre", "RS");
-        var cep3 = new CEP(null, "02233-000", "Rua Capitão Rubens", "bairro3", "São Paulo", "SP");
+        var cep1 = new CEP(null, "90160092", "Avenida Ipiranga", "bairro1", "Porto Alegre", "RS");
+        var cep2 = new CEP(null, "91781001", "Avenida Juca Batista", "bairro2", "Porto Alegre", "RS");
+        var cep3 = new CEP(null, "02233000", "Rua Capitão Rubens", "bairro3", "São Paulo", "SP");
         cepRepository.save(cep1);
         cepRepository.save(cep2);
         cepRepository.save(cep3);
@@ -142,7 +143,7 @@ class CepControllerTests {
     }
 
     ResultActions assertPagedCep(ResultActions resultActions, CEP cep, int index) throws Exception {
-        return resultActions.andExpect(jsonPath("$.content[" + index + "].cep").value(cep.getCep()))
+        return resultActions.andExpect(jsonPath("$.content[" + index + "].cep").value(Utils.formatCep(cep.getCep())))
                 .andExpect(jsonPath("$.content[" + index + "].logradouro").value(cep.getLogradouro()))
                 .andExpect(jsonPath("$.content[" + index + "].bairro").value(cep.getBairro()))
                 .andExpect(jsonPath("$.content[" + index + "].cidade").value(cep.getCidade()))
@@ -163,7 +164,7 @@ class CepControllerTests {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(body.toJSONString())
                 ).andExpect(status().isCreated())
-                .andExpect(jsonPath("$.cep").value("90160-092"))
+                .andExpect(jsonPath("$.cep").value("90.160-092"))
                 .andExpect(jsonPath("$.logradouro").value("Avenida Ipiranga"))
                 .andExpect(jsonPath("$.bairro").value("bairro1"))
                 .andExpect(jsonPath("$.cidade").value("Porto Alegre"))
@@ -171,7 +172,7 @@ class CepControllerTests {
 
         mockMvc.perform(get("/cep/90160-092"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.cep").value("90160-092"))
+                .andExpect(jsonPath("$.cep").value("90.160-092"))
                 .andExpect(jsonPath("$.logradouro").value("Avenida Ipiranga"))
                 .andExpect(jsonPath("$.bairro").value("bairro1"))
                 .andExpect(jsonPath("$.cidade").value("Porto Alegre"))
