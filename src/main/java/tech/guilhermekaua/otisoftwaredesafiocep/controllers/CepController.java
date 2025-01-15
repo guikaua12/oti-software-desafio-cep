@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import tech.guilhermekaua.otisoftwaredesafiocep.validation.Cep;
 @RestController
 @RequestMapping("/cep")
 @Validated
+@SecurityRequirement(name = "JWT Bearer")
 @ApiResponses({
         @ApiResponse(responseCode = "401", description = "Sem autorização.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(responseCode = "400", description = "Erro de validação.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
