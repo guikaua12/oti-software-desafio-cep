@@ -1,4 +1,4 @@
-package tech.guilhermekaua.otisoftwaredesafiocep.dtos;
+package tech.guilhermekaua.otisoftwaredesafiocep.dtos.cep;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

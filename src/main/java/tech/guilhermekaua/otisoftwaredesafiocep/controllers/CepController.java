@@ -11,12 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CepDTO;
-import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CepFilterDTO;
-import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CreateCepDTO;
-import tech.guilhermekaua.otisoftwaredesafiocep.dtos.UpdateCepDTO;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.cep.CepDTO;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.cep.CepFilterDTO;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.cep.CreateCepDTO;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.cep.UpdateCepDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.error.exceptions.handler.ApiErrorResponse;
-import tech.guilhermekaua.otisoftwaredesafiocep.services.CepService;
+import tech.guilhermekaua.otisoftwaredesafiocep.services.cep.CepService;
 import tech.guilhermekaua.otisoftwaredesafiocep.validation.Cep;
 
 @RestController

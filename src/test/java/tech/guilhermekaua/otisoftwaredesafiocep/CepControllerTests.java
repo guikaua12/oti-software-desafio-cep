@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -55,6 +56,7 @@ class CepControllerTests {
     }
 
     @Test
+    @WithMockUser
     void shouldFindByCepByCep() throws Exception {
         cepRepository.save(new CEP(null, "90160092", "Avenida Ipiranga", "bairro1", "Porto Alegre", "RS"));
 
@@ -69,6 +71,7 @@ class CepControllerTests {
     }
 
     @Test
+    @WithMockUser
     void shouldReturnErrorIfCepNotFound() throws Exception {
         mockMvc.perform(get("/cep/99999-999"))
                 .andExpect(status().isNotFound())
@@ -78,6 +81,7 @@ class CepControllerTests {
     }
 
     @Test
+    @WithMockUser
     void shouldReturnErrorIfInvalidCepFormat() throws Exception {
         mockMvc.perform(get("/cep/99999-9991"))
                 .andExpect(status().isBadRequest())
@@ -87,6 +91,7 @@ class CepControllerTests {
     }
 
     @Test
+    @WithMockUser
     void shouldFilterCepsByCidadeAndLogradouro() throws Exception {
         var cep1 = new CEP(null, "90160092", "Avenida Ipiranga", "bairro1", "Porto Alegre", "RS");
         var cep2 = new CEP(null, "91781001", "Avenida Juca Batista", "bairro2", "Porto Alegre", "RS");
@@ -150,6 +155,7 @@ class CepControllerTests {
     }
 
     @Test
+    @WithMockUser
     void shouldCreateCep() throws Exception {
         final JSONObject body = new JSONObject();
         body.put("cep", "90160-092");
@@ -179,6 +185,7 @@ class CepControllerTests {
     }
 
     @Test
+    @WithMockUser
     void shouldNotCreateCepIfAlreadyExists() throws Exception {
         final JSONObject body = new JSONObject();
         body.put("cep", "90160-092");
@@ -204,6 +211,7 @@ class CepControllerTests {
     }
 
     @Test
+    @WithMockUser
     void shouldNotCreateCepIfInvalidCep() throws Exception {
         final JSONObject body = new JSONObject();
         body.put("cep", "90160-09299999");
@@ -223,6 +231,7 @@ class CepControllerTests {
     }
 
     @Test
+    @WithMockUser
     void shouldUpdateCep() throws Exception {
         final JSONObject createCepBody = new JSONObject();
         createCepBody.put("cep", "90160-092");
@@ -260,6 +269,7 @@ class CepControllerTests {
     }
 
     @Test
+    @WithMockUser
     void shouldNotUpdateIfCepNotFound() throws Exception {
         final JSONObject updateCepBody = new JSONObject();
         updateCepBody.put("cep", "90160-092");
@@ -276,5 +286,4 @@ class CepControllerTests {
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value("CEP não encontrado."));
     }
-
 }

@@ -1,4 +1,4 @@
-package tech.guilhermekaua.otisoftwaredesafiocep.dtos;
+package tech.guilhermekaua.otisoftwaredesafiocep.dtos.cep;
 
 import org.springframework.data.domain.Page;
 import tech.guilhermekaua.otisoftwaredesafiocep.entities.CEP;

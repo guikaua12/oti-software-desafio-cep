@@ -1,4 +1,4 @@
-package tech.guilhermekaua.otisoftwaredesafiocep.services;
+package tech.guilhermekaua.otisoftwaredesafiocep.services.cep;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import tech.guilhermekaua.otisoftwaredesafiocep.dao.CepRepository;
-import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CepFilterDTO;
-import tech.guilhermekaua.otisoftwaredesafiocep.dtos.CreateCepDTO;
-import tech.guilhermekaua.otisoftwaredesafiocep.dtos.UpdateCepDTO;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.cep.CepFilterDTO;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.cep.CreateCepDTO;
+import tech.guilhermekaua.otisoftwaredesafiocep.dtos.cep.UpdateCepDTO;
 import tech.guilhermekaua.otisoftwaredesafiocep.entities.CEP;
 import tech.guilhermekaua.otisoftwaredesafiocep.error.enums.ErrorCode;
 import tech.guilhermekaua.otisoftwaredesafiocep.error.exceptions.ErrorCodeException;
@@ -61,7 +61,7 @@ public class CepService {
 
         if (dto.estado() != null && !dto.estado().isBlank())
             cep.setEstado(dto.estado());
-        
+
         return cepRepository.save(cep);
     }
 }
