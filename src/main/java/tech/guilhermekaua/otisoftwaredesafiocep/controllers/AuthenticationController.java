@@ -20,6 +20,9 @@ import tech.guilhermekaua.otisoftwaredesafiocep.services.security.Authentication
 @RestController
 @RequestMapping("/auth")
 @Validated
+@ApiResponses({
+        @ApiResponse(responseCode = "400", description = "Erro de validação.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+})
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
@@ -31,7 +34,6 @@ public class AuthenticationController {
     @Operation(summary = "Se autentica como um usuário")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Autenticação bem sucedida."),
-            @ApiResponse(responseCode = "400", description = "Erro de validação.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Credenciais inválidas", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     public SuccessfulAuthenticationDTO login(@RequestBody @Valid LoginDTO dto) {
@@ -42,7 +44,6 @@ public class AuthenticationController {
     @Operation(summary = "Se registra como um usuário")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Registro bem sucedido."),
-            @ApiResponse(responseCode = "400", description = "Erro de validação.", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
             @ApiResponse(responseCode = "409", description = "Usuário já existente", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     public SuccessfulAuthenticationDTO register(@RequestBody @Valid RegisterDTO dto) {
