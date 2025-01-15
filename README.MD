@@ -24,6 +24,8 @@ docker compose up -d
 
 ### Sem docker:
 
+Sem docker, o banco de dados precisa estar rodando a parte por quem for executar
+
 ```shell
 ./mvnw clean install -Dmaven.test.skip=true
 ./mvnw spring-boot:run
