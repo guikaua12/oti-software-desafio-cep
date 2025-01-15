@@ -18,6 +18,7 @@ possivel mandar **2 query parameters** opcionais, com o valor que quer filtrar, 
 ```sh
 # Vai buildar, rodar os testes e gerar uma imagem do docker
 ./mvnw clean install
+# Vai criar os containers da aplicação e do postgres
 docker compose up -d
 ```
 
