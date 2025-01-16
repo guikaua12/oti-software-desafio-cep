@@ -1,4 +1,4 @@
-# Teste técnico OTI Sofware
+# Teste técnico OTI Software
 
 A documentação dos endpoints pode ser consultada rodando o projeto e navegando até http://localhost:8080/swagger-ui.html
 
